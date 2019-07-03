@@ -12,17 +12,17 @@ Provide a brief summary of your PR...
 
 - Any additional notes you think will be useful.
 
-## Testing
+## Verification and testing
 
 **If there is both a problem and a solution, these steps should document how to demonstrate the problem that is being solved. If there is no problem (it's just a feature) you can remove the _Recreate_ section below.**
 
-### Recreate
+### Verification
 
 These are the steps to demonstrate the problem being solved:
 
 - [ ] A list of steps to demonstrate the problem.
 
-### Solution
+### Testing
 
 These are the steps to demonstrate the solution being solved; they typically include steps to update the repository to a new state containing the code that fixes the problem.
 
