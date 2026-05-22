@@ -2,14 +2,15 @@ name: iao-auto-remove-feedback-label
 
 on:
   workflow_call:
+    secrets:
+      workflow_token:
+        required: true
 
 jobs:
   remove-feedback:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.workflow_token }}
     steps:
       - name: Find associated PR and remove feedback label
         run: |
