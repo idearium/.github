@@ -1,0 +1,32 @@
+name: iao-auto-feedback-label
+
+on:
+  workflow_call:
+
+jobs:
+  label-feedback:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR: ${{ github.event.issue.number }}
+    steps:
+      - name: Check comment prefix and add feedback label
+        run: |
+          COMMENT="${{ github.event.comment.body }}"
+
+          LABELS=$(gh api "repos/${{ github.repository }}/issues/${PR}/labels" \
+            --jq '.[].name')
+
+          for LABEL in $LABELS; do
+            PREFIX="@${LABEL}:"
+            if [[ "$COMMENT" == "${PREFIX}"* ]]; then
+              gh api "repos/${{ github.repository }}/issues/${PR}/labels" \
+                -f "labels[]=feedback" --silent
+              echo "Added feedback label to PR #${PR} (matched ${PREFIX} prefix)."
+              exit 0
+            fi
+          done
+
+          echo "No matching label prefix found in comment, skipping."

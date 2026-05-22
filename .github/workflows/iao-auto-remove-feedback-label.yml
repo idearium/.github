@@ -1,0 +1,38 @@
+name: iao-auto-remove-feedback-label
+
+on:
+  workflow_call:
+
+jobs:
+  remove-feedback:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Find associated PR and remove feedback label
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          PR_NUMBER=$(gh pr list --repo "${{ github.repository }}" \
+            --head "${BRANCH}" \
+            --state open \
+            --json number \
+            --jq '.[0].number')
+
+          if [ -z "${PR_NUMBER}" ]; then
+            echo "No open PR found for branch ${BRANCH}, skipping."
+            exit 0
+          fi
+
+          HAS_FEEDBACK=$(gh api "repos/${{ github.repository }}/issues/${PR_NUMBER}/labels" \
+            --jq '[.[] | select(.name == "feedback")] | length')
+
+          if [ "${HAS_FEEDBACK}" -eq 0 ]; then
+            echo "PR #${PR_NUMBER} does not have the feedback label, skipping."
+            exit 0
+          fi
+
+          gh api "repos/${{ github.repository }}/issues/${PR_NUMBER}/labels/feedback" \
+            --method DELETE --silent
+          echo "Removed feedback label from PR #${PR_NUMBER}."
