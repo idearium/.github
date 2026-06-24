@@ -1,4 +1,4 @@
-name: iao-auto-remove-feedback-label
+name: cntrl-auto-remove-feedback-label
 
 on:
   workflow_call:

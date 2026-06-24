@@ -1,4 +1,4 @@
-name: iao-auto-feedback-label
+name: cntrl-auto-feedback-label
 
 on:
   workflow_call:
